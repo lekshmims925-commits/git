@@ -10,10 +10,12 @@ st.set_page_config(
 )
 
 # --- Define Image URLs (NEW WORKING LINKS) ---
-HERO_IMAGE = 'https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80'
-STANDARD_ROOM_IMG = 'https://images.unsplash.com/photo-1582719478252-67eef07c7290?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1770&q=80'
-DELUXE_SUITE_IMG = 'https://images.unsplash.com/photo-1596436889106-be35e843f974?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1770&q=80'
-FAMILY_ROOM_IMG = 'https://images.unsplash.com/photo-1578683010236-d716f4a3aa5d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1770&q=80'
+# Replacing with stable, high-quality links
+HERO_IMAGE = 'https://images.unsplash.com/photo-1563911302283-d2bc129e7570?ixlib=rb-4.0.3&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=2070'
+STANDARD_ROOM_IMG = 'https://images.unsplash.com/photo-1560447330-9d93699b61d4?ixlib=rb-4.0.3&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=1770'
+DELUXE_SUITE_IMG = 'https://images.unsplash.com/photo-1590439493913-c35d944111be?ixlib=rb-4.0.3&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=1770'
+FAMILY_ROOM_IMG = 'https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?ixlib=rb-4.0.3&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=1770'
+
 
 # --- Custom CSS for Styling ---
 st.markdown(
@@ -169,6 +171,20 @@ st.markdown(
         line-height: 1;
     }}
     
+    /* --- Contact Info Styling --- */
+    .contact-info {{
+        text-align: left;
+        padding: 20px;
+        border-radius: 8px;
+    }}
+    .contact-info p {{
+        font-size: 1.1em;
+        margin-bottom: 10px;
+    }}
+    .contact-info b {{
+        color: #004c4c;
+    }}
+    
     /* --- Footer --- */
     .custom-footer {{
         background: #1c1c1c; 
@@ -192,11 +208,11 @@ if 'page' not in st.session_state:
 def navigate_to(page_name):
     st.session_state['page'] = page_name
     
-# Function to handle form submission
+# Function to handle booking form submission
 def submit_booking():
-    # Example validation: Check if dates are selected
-    if not st.session_state['check_in'] or not st.session_state['check_out']:
-        st.error("Please select both Check-in and Check-out dates.")
+    # Example validation: Check if required fields are filled
+    if not st.session_state.get('guest_name') or not st.session_state.get('guest_email'):
+        st.error("Please fill in your Full Name and Email Address.")
         return
 
     # Check if check-out is after check-in
@@ -204,16 +220,32 @@ def submit_booking():
         st.error("Check-out date must be after Check-in date.")
         return
         
-    st.success(f"**Reservation Successful!**")
+    st.success(f"**Reservation Successful!** We've sent a confirmation email to {st.session_state['guest_email']}.")
     st.balloons()
     st.info(f"""
         **Details:**
         - **Guest Name:** {st.session_state['guest_name']}
         - **Room Type:** {st.session_state['room_type']}
         - **Dates:** {st.session_state['check_in'].strftime('%Y-%m-%d')} to {st.session_state['check_out'].strftime('%Y-%m-%d')}
-        - **Guests:** {st.session_state['num_guests']}
-        - **Email:** {st.session_state['guest_email']}
     """)
+
+# Function to handle contact form submission
+def submit_contact_form():
+    if not st.session_state.get('contact_name') or not st.session_state.get('contact_email') or not st.session_state.get('contact_message'):
+        st.error("Please fill in your Name, Email, and Message.")
+        return
+        
+    st.success(f"**Thank you, {st.session_state['contact_name']}!** Your message has been received.")
+    st.info(f"""
+        **We received the following inquiry:**
+        - **Topic:** {st.session_state['contact_topic']}
+        - **Message:** "{st.session_state['contact_message'][:100]}..." (Summary)
+    """)
+    # Reset form fields after submission (requires keys for widgets)
+    st.session_state['contact_name'] = ""
+    st.session_state['contact_email'] = ""
+    st.session_state['contact_topic'] = "General Inquiry"
+    st.session_state['contact_message'] = ""
 
 
 # --- 1. Functional Navigation (Streamlit Sidebar) ---
@@ -298,7 +330,7 @@ elif st.session_state['page'] == "Rooms & Suites":
     # Button to navigate to Book a Room
     st.button("Ready to Book Your Stay?", on_click=navigate_to, args=("Book a Room",))
 
-# --- Booking Page: Interactive Form ---
+# --- Booking Page: Interactive Form (Retained from previous step) ---
 elif st.session_state['page'] == "Book a Room":
     st.markdown("<h2>Secure Your Reservation 📝</h2>", unsafe_allow_html=True)
     st.markdown("Please fill out the details below to complete your booking.")
@@ -356,9 +388,8 @@ elif st.session_state['page'] == "Book a Room":
         st.markdown("---")
         submitted = st.form_submit_button("Confirm Booking", on_click=submit_booking)
         
-        # Note: Submission logic is handled by the submit_booking function
 
-# --- Placeholder Pages for the rest of the navigation ---
+# --- Amenities Page ---
 elif st.session_state['page'] == "Amenities":
     st.markdown("<h2>Luxury Amenities ✨</h2>", unsafe_allow_html=True)
     st.write("We offer a range of premium amenities to ensure your stay is comfortable.")
@@ -368,14 +399,47 @@ elif st.session_state['page'] == "Amenities":
             <li><i class="icon">★</i> Complimentary High-Speed Wi-Fi</li>
             <li><i class="icon">★</i> Rooftop Pool & Lounge</li>
             <li><i class="icon">★</i> Fine Dining Restaurant</li>
+            <li><i class="icon">★</i> 24-Hour Room Service</li>
+            <li><i class="icon">★</i> Fitness Center & Spa</li>
         </div>
         """,
         unsafe_allow_html=True
     )
     
+# --- Contact Us Page: Contact Info and Form ---
 elif st.session_state['page'] == "Contact Us":
     st.markdown("<h2>Contact The Grandview Hotel 📞</h2>", unsafe_allow_html=True)
-    st.info("Here you will place your contact information and contact form.")
+    st.write("We're here to assist you with any inquiries, bookings, or special requests.")
+
+    contact_col, form_col = st.columns([1, 2]) # Split into 1/3 for info, 2/3 for form
+
+    with contact_col:
+        st.subheader("Our Information 📍")
+        st.markdown('<div class="contact-info">', unsafe_allow_html=True)
+        st.markdown("<p><b>Address:</b> 42 Grandview Blvd, City Center, 10001</p>", unsafe_allow_html=True)
+        st.markdown("<p><b>Phone:</b> +1 (555) 123-4567</p>", unsafe_allow_html=True)
+        st.markdown("<p><b>Email:</b> info@grandviewhotel.com</p>", unsafe_allow_html=True)
+        st.markdown("<p><b>Hours:</b> 24/7 Concierge Service</p>", unsafe_allow_html=True)
+        st.markdown('</div>', unsafe_allow_html=True)
+
+    with form_col:
+        st.subheader("Send Us a Message 📧")
+        with st.form(key="contact_form"):
+            name_col, email_col = st.columns(2)
+            with name_col:
+                contact_name = st.text_input("Your Name*", key="contact_name")
+            with email_col:
+                contact_email = st.text_input("Your Email*", key="contact_email")
+            
+            contact_topic = st.selectbox(
+                "Topic", 
+                ["General Inquiry", "Reservation Change", "Group Booking", "Feedback"],
+                key="contact_topic"
+            )
+            
+            contact_message = st.text_area("Your Message*", height=150, key="contact_message")
+            
+            st.form_submit_button("Submit Inquiry", on_click=submit_contact_form)
 
 
 # --- Footer ---
