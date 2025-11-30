@@ -6,7 +6,7 @@ st.set_page_config(
     page_title="The Grandview Hotel",
     layout="wide",
     # Changed to 'auto' or 'expanded' so the sidebar navigation works
-    initial_sidebar_state="auto" 
+    initial_sidebar_state="auto"
 )
 
 # --- Define Image URLs (REPLACE THESE WITH YOUR ACTUAL IMAGE URLs) ---
@@ -85,8 +85,8 @@ st.markdown(
         color: white;
     }}
 
-    /* Primary Button (Same as before) */
-    .btn-primary {{
+    /* Primary Button (To style the Streamlit button) */
+    .stButton>button {{
         display: inline-block;
         background: #ffcc00;
         color: #004c4c !important;
@@ -98,10 +98,16 @@ st.markdown(
         font-weight: bold;
         transition: background 0.3s, box-shadow 0.3s;
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+        border: none; /* Remove default Streamlit border */
     }}
-    .btn-primary:hover {{
+    .stButton>button:hover {{
         background: #e6b800;
         box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+    }}
+    /* Center the button inside the hero content */
+    .hero-button-container {{
+        text-align: center;
+        margin-top: 25px;
     }}
     
     /* Section Headers */
@@ -180,14 +186,24 @@ st.markdown(
     unsafe_allow_html=True
 )
 
+# --- Initialize Session State for Navigation ---
+if 'page' not in st.session_state:
+    st.session_state['page'] = "Home"
+
+# Function to navigate
+def navigate_to(page_name):
+    st.session_state['page'] = page_name
 
 # --- 1. Functional Navigation (Streamlit Sidebar) ---
 st.sidebar.title("The Grandview Hotel 🏨")
 st.sidebar.markdown("---") 
 
+# Use the session state variable to control the radio button
 page = st.sidebar.radio(
     "Explore our hotel:",
-    ["Home", "Rooms & Suites", "Book a Room", "Amenities", "Contact Us"]
+    ["Home", "Rooms & Suites", "Book a Room", "Amenities", "Contact Us"],
+    key="page", # Link radio to session state
+    on_change=lambda: navigate_to(st.session_state['page']) # Re-run app on change
 )
 
 st.sidebar.markdown("---")
@@ -195,19 +211,28 @@ st.sidebar.info("Experience luxury with seamless web deployment!")
 
 # --- 2. Page Rendering Logic ---
 
-if page == "Home":
+if st.session_state['page'] == "Home":
     # Hero Section with embedded image URL from CSS
     st.markdown('<div class="hero-section">', unsafe_allow_html=True)
+    
+    # Use st.container to center the button visually
     st.markdown(
         """
         <div class="hero-content">
             <h2>Your Luxurious Escape Awaits</h2>
             <p>Experience world-class hospitality in the heart of the city.</p>
-            <a href="#rooms" class="btn-primary">Explore Rooms</a>
         </div>
         """,
         unsafe_allow_html=True
     )
+    
+    # Place the button inside a container for styling control
+    with st.container():
+        # The button to trigger navigation
+        if st.button("Explore Rooms"):
+            navigate_to("Rooms & Suites")
+            st.rerun() # Force re-run to update the page immediately
+
     st.markdown('</div>', unsafe_allow_html=True)
     
     # Text content for Home
@@ -215,7 +240,7 @@ if page == "Home":
     st.write("With unparalleled service, breathtaking views, and modern amenities, your stay with us will be an unforgettable experience. We pride ourselves on exceptional hospitality and a tranquil environment.")
 
 # --- Rooms Section with st.image() ---
-elif page == "Rooms & Suites":
+elif st.session_state['page'] == "Rooms & Suites":
     st.markdown("<h2>Our Luxurious Accommodations</h2>", unsafe_allow_html=True)
     st.write("Each room and suite is designed with your comfort in mind, blending elegant decor with modern conveniences.")
 
@@ -250,12 +275,12 @@ elif page == "Rooms & Suites":
     st.button("Ready to Book Your Stay?") # Placeholder button
 
 # --- Placeholder Pages for the rest of the navigation ---
-elif page == "Book a Room":
+elif st.session_state['page'] == "Book a Room":
     st.markdown("<h2>Secure Your Reservation 📝</h2>", unsafe_allow_html=True)
     st.info("Here you will place your interactive booking form using `st.form()` and widgets.")
     # Add your booking form logic here if needed
 
-elif page == "Amenities":
+elif st.session_state['page'] == "Amenities":
     st.markdown("<h2>Luxury Amenities ✨</h2>", unsafe_allow_html=True)
     st.write("We offer a range of premium amenities to ensure your stay is comfortable.")
     st.markdown(
@@ -269,7 +294,7 @@ elif page == "Amenities":
         unsafe_allow_html=True
     )
     
-elif page == "Contact Us":
+elif st.session_state['page'] == "Contact Us":
     st.markdown("<h2>Contact The Grandview Hotel 📞</h2>", unsafe_allow_html=True)
     st.info("Here you will place your contact information and contact form.")
 
