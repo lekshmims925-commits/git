@@ -6,7 +6,7 @@ st.set_page_config(
     page_title="The Grandview Hotel",
     layout="wide",
     # Changed to 'auto' or 'expanded' so the sidebar navigation works
-    initial_sidebar_state="auto"
+    initial_sidebar_state="auto" 
 )
 
 # --- Define Image URLs (REPLACE THESE WITH YOUR ACTUAL IMAGE URLs) ---
@@ -190,7 +190,7 @@ st.markdown(
 if 'page' not in st.session_state:
     st.session_state['page'] = "Home"
 
-# Function to navigate
+# Function to navigate (Used for the button's on_click)
 def navigate_to(page_name):
     st.session_state['page'] = page_name
 
@@ -199,23 +199,23 @@ st.sidebar.title("The Grandview Hotel 🏨")
 st.sidebar.markdown("---") 
 
 # Use the session state variable to control the radio button
-page = st.sidebar.radio(
+# Linking the radio directly to the session state key "page"
+st.sidebar.radio(
     "Explore our hotel:",
     ["Home", "Rooms & Suites", "Book a Room", "Amenities", "Contact Us"],
-    key="page", # Link radio to session state
-    on_change=lambda: navigate_to(st.session_state['page']) # Re-run app on change
+    key="page" # Link radio to session state
+    # No on_change necessary here, as setting the key directly handles the state
 )
 
 st.sidebar.markdown("---")
 st.sidebar.info("Experience luxury with seamless web deployment!")
 
-# --- 2. Page Rendering Logic ---
+# --- 2. Page Rendering Logic (Uses st.session_state['page']) ---
 
 if st.session_state['page'] == "Home":
     # Hero Section with embedded image URL from CSS
     st.markdown('<div class="hero-section">', unsafe_allow_html=True)
     
-    # Use st.container to center the button visually
     st.markdown(
         """
         <div class="hero-content">
@@ -228,10 +228,13 @@ if st.session_state['page'] == "Home":
     
     # Place the button inside a container for styling control
     with st.container():
-        # The button to trigger navigation
-        if st.button("Explore Rooms"):
-            navigate_to("Rooms & Suites")
-            st.rerun() # Force re-run to update the page immediately
+        # *** FIX: Use on_click and args to safely navigate ***
+        st.button(
+            "Explore Rooms",
+            on_click=navigate_to, 
+            args=("Rooms & Suites",),
+            key="explore_rooms_btn" # Unique key for the button
+        )
 
     st.markdown('</div>', unsafe_allow_html=True)
     
