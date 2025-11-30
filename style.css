@@ -1,0 +1,202 @@
+/* --- Global Reset and Setup --- */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    line-height: 1.6;
+    color: #333;
+    background-color: #fff;
+}
+
+.container {
+    width: 80%;
+    margin: auto;
+    overflow: hidden;
+}
+
+/* --- Header & Navigation --- */
+header {
+    background: #004c4c; /* Dark Teal */
+    color: #ffffff;
+    padding: 15px 0;
+    border-bottom: 3px solid #ffcc00; /* Gold accent */
+}
+
+header h1 {
+    float: left;
+}
+
+header nav {
+    float: right;
+    margin-top: 5px;
+}
+
+header ul {
+    list-style: none;
+}
+
+header li {
+    display: inline;
+    padding: 0 20px 0 20px;
+}
+
+header a {
+    color: #ffffff;
+    text-decoration: none;
+    text-transform: uppercase;
+    font-size: 14px;
+    transition: color 0.3s;
+}
+
+header a:hover {
+    color: #ffcc00;
+}
+
+/* Button Styling (Reusable) */
+.btn-book {
+    background: #ffcc00;
+    color: #004c4c !important;
+    padding: 8px 15px;
+    border-radius: 5px;
+    font-weight: bold;
+}
+
+.btn-primary {
+    display: inline-block;
+    background: #ffcc00;
+    color: #004c4c !important;
+    padding: 12px 25px;
+    text-decoration: none;
+    border-radius: 5px;
+    margin-top: 20px;
+    font-size: 16px;
+    font-weight: bold;
+    transition: background 0.3s;
+}
+
+.btn-primary:hover {
+    background: #e6b800;
+}
+
+/* --- Hero Section --- */
+.hero {
+    background: url('https://via.placeholder.com/1500x500?text=Hotel+Lobby+Image') no-repeat center center/cover;
+    height: 60vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;
+    text-align: center;
+}
+
+.hero-content {
+    background: rgba(0, 0, 0, 0.5); /* Semi-transparent overlay */
+    padding: 30px 40px;
+    border-radius: 10px;
+}
+
+.hero h2 {
+    font-size: 3em;
+    margin-bottom: 10px;
+}
+
+.hero p {
+    font-size: 1.2em;
+}
+
+/* --- General Section Styling --- */
+section {
+    padding: 60px 0;
+    text-align: center;
+}
+
+h2 {
+    font-size: 2.5em;
+    color: #004c4c;
+    margin-bottom: 40px;
+}
+
+/* --- Rooms Section --- */
+.section-rooms {
+    background: #f4f4f4;
+}
+
+.room-grid {
+    display: flex;
+    justify-content: space-around;
+    gap: 20px;
+}
+
+.room-card {
+    background: #ffffff;
+    border: 1px solid #ddd;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 30%;
+    transition: transform 0.3s;
+}
+
+.room-card:hover {
+    transform: translateY(-5px);
+}
+
+.room-card img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 4px;
+    margin-bottom: 15px;
+}
+
+/* --- Amenities Section --- */
+.section-amenities {
+    background: #e6f7f7; /* Light Teal */
+}
+
+.amenities-list {
+    list-style: none;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.amenities-list li {
+    background: #ffffff;
+    color: #004c4c;
+    padding: 15px 25px;
+    margin: 10px;
+    border-radius: 50px;
+    font-weight: bold;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.icon {
+    margin-right: 8px;
+    color: #ffcc00;
+    font-size: 1.2em;
+}
+
+/* --- Contact Section --- */
+.section-contact p {
+    font-size: 1.1em;
+    margin-bottom: 10px;
+}
+
+.section-contact a {
+    color: #004c4c;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+/* --- Footer --- */
+footer {
+    background: #333;
+    color: #ffffff;
+    padding: 20px 0;
+    text-align: center;
+    margin-top: 20px;
+}
