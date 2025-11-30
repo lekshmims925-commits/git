@@ -1,23 +1,21 @@
 # -*- coding: utf-8 -*-
 import streamlit as st
+import datetime
 
 # --- Configuration & Styling ---
 st.set_page_config(
     page_title="The Grandview Hotel",
     layout="wide",
-    # Changed to 'auto' or 'expanded' so the sidebar navigation works
     initial_sidebar_state="auto" 
 )
 
-# --- Define Image URLs (REPLACE THESE WITH YOUR ACTUAL IMAGE URLs) ---
-HERO_IMAGE = 'https://images.unsplash.com/photo-1542314831-068cd1dbf3ce?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80'
-STANDARD_ROOM_IMG = 'https://images.unsplash.com/photo-1560003058-294025f0e9d3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1770&q=80'
-DELUXE_SUITE_IMG = 'https://images.unsplash.com/photo-1611892440504-42a792e24d32?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1770&q=80'
-FAMILY_ROOM_IMG = 'https://images.unsplash.com/photo-1544078864-77e7709565ec?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1770&q=80'
+# --- Define Image URLs (NEW WORKING LINKS) ---
+HERO_IMAGE = 'https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80'
+STANDARD_ROOM_IMG = 'https://images.unsplash.com/photo-1582719478252-67eef07c7290?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1770&q=80'
+DELUXE_SUITE_IMG = 'https://images.unsplash.com/photo-1596436889106-be35e843f974?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1770&q=80'
+FAMILY_ROOM_IMG = 'https://images.unsplash.com/photo-1578683010236-d716f4a3aa5d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1770&q=80'
 
-
-# --- Custom CSS for Styling (Based on your enhanced style.css) ---
-# We use the CSS from the previous step to apply the attractive styles.
+# --- Custom CSS for Styling ---
 st.markdown(
     f"""
     <style>
@@ -193,18 +191,40 @@ if 'page' not in st.session_state:
 # Function to navigate (Used for the button's on_click)
 def navigate_to(page_name):
     st.session_state['page'] = page_name
+    
+# Function to handle form submission
+def submit_booking():
+    # Example validation: Check if dates are selected
+    if not st.session_state['check_in'] or not st.session_state['check_out']:
+        st.error("Please select both Check-in and Check-out dates.")
+        return
+
+    # Check if check-out is after check-in
+    if st.session_state['check_in'] >= st.session_state['check_out']:
+        st.error("Check-out date must be after Check-in date.")
+        return
+        
+    st.success(f"**Reservation Successful!**")
+    st.balloons()
+    st.info(f"""
+        **Details:**
+        - **Guest Name:** {st.session_state['guest_name']}
+        - **Room Type:** {st.session_state['room_type']}
+        - **Dates:** {st.session_state['check_in'].strftime('%Y-%m-%d')} to {st.session_state['check_out'].strftime('%Y-%m-%d')}
+        - **Guests:** {st.session_state['num_guests']}
+        - **Email:** {st.session_state['guest_email']}
+    """)
+
 
 # --- 1. Functional Navigation (Streamlit Sidebar) ---
 st.sidebar.title("The Grandview Hotel 🏨")
 st.sidebar.markdown("---") 
 
 # Use the session state variable to control the radio button
-# Linking the radio directly to the session state key "page"
 st.sidebar.radio(
     "Explore our hotel:",
     ["Home", "Rooms & Suites", "Book a Room", "Amenities", "Contact Us"],
     key="page" # Link radio to session state
-    # No on_change necessary here, as setting the key directly handles the state
 )
 
 st.sidebar.markdown("---")
@@ -228,12 +248,11 @@ if st.session_state['page'] == "Home":
     
     # Place the button inside a container for styling control
     with st.container():
-        # *** FIX: Use on_click and args to safely navigate ***
         st.button(
             "Explore Rooms",
             on_click=navigate_to, 
             args=("Rooms & Suites",),
-            key="explore_rooms_btn" # Unique key for the button
+            key="explore_rooms_btn"
         )
 
     st.markdown('</div>', unsafe_allow_html=True)
@@ -275,14 +294,71 @@ elif st.session_state['page'] == "Rooms & Suites":
         st.markdown("</div>", unsafe_allow_html=True)
     
     st.markdown("<br>", unsafe_allow_html=True)
-    st.button("Ready to Book Your Stay?") # Placeholder button
+    
+    # Button to navigate to Book a Room
+    st.button("Ready to Book Your Stay?", on_click=navigate_to, args=("Book a Room",))
 
-# --- Placeholder Pages for the rest of the navigation ---
+# --- Booking Page: Interactive Form ---
 elif st.session_state['page'] == "Book a Room":
     st.markdown("<h2>Secure Your Reservation 📝</h2>", unsafe_allow_html=True)
-    st.info("Here you will place your interactive booking form using `st.form()` and widgets.")
-    # Add your booking form logic here if needed
+    st.markdown("Please fill out the details below to complete your booking.")
 
+    # Start the form
+    with st.form(key="booking_form"):
+        # 1. Date Selection
+        st.subheader("Stay Details 📅")
+        
+        date_col1, date_col2 = st.columns(2)
+        with date_col1:
+            check_in = st.date_input(
+                "Check-in Date", 
+                min_value=datetime.date.today(), 
+                value=datetime.date.today(),
+                key="check_in"
+            )
+        with date_col2:
+            check_out = st.date_input(
+                "Check-out Date", 
+                min_value=datetime.date.today() + datetime.timedelta(days=1), 
+                value=datetime.date.today() + datetime.timedelta(days=2),
+                key="check_out"
+            )
+
+        # 2. Room & Guest Selection
+        st.subheader("Room & Guest Preferences 🛏️")
+
+        room_col, guest_col = st.columns(2)
+        with room_col:
+            room_type = st.selectbox(
+                "Select Room Type",
+                ["Standard Double", "Deluxe Suite", "Family Room"],
+                key="room_type"
+            )
+        with guest_col:
+            num_guests = st.slider(
+                "Number of Guests", 
+                min_value=1, 
+                max_value=6, 
+                value=2,
+                key="num_guests"
+            )
+        
+        # 3. Guest Information
+        st.subheader("Your Contact Information 📧")
+        
+        name_col, email_col = st.columns(2)
+        with name_col:
+            guest_name = st.text_input("Full Name", key="guest_name")
+        with email_col:
+            guest_email = st.text_input("Email Address", key="guest_email")
+
+        # Submit button
+        st.markdown("---")
+        submitted = st.form_submit_button("Confirm Booking", on_click=submit_booking)
+        
+        # Note: Submission logic is handled by the submit_booking function
+
+# --- Placeholder Pages for the rest of the navigation ---
 elif st.session_state['page'] == "Amenities":
     st.markdown("<h2>Luxury Amenities ✨</h2>", unsafe_allow_html=True)
     st.write("We offer a range of premium amenities to ensure your stay is comfortable.")
