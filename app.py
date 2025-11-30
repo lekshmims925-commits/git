@@ -1,302 +1,283 @@
 # -*- coding: utf-8 -*-
-# This line is CRUCIAL! It fixes the '★' Unicode error.
 import streamlit as st
 
-# --- Configuration ---
-# Set the page title and layout
+# --- Configuration & Styling ---
 st.set_page_config(
     page_title="The Grandview Hotel",
     layout="wide",
-    initial_sidebar_state="collapsed"
+    # Changed to 'auto' or 'expanded' so the sidebar navigation works
+    initial_sidebar_state="auto" 
 )
 
-# --- Custom CSS for Styling (Mimics style.css) ---
+# --- Define Image URLs (REPLACE THESE WITH YOUR ACTUAL IMAGE URLs) ---
+HERO_IMAGE = 'https://images.unsplash.com/photo-1542314831-068cd1dbf3ce?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80'
+STANDARD_ROOM_IMG = 'https://images.unsplash.com/photo-1560003058-294025f0e9d3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1770&q=80'
+DELUXE_SUITE_IMG = 'https://images.unsplash.com/photo-1611892440504-42a792e24d32?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1770&q=80'
+FAMILY_ROOM_IMG = 'https://images.unsplash.com/photo-1544078864-77e7709565ec?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1770&q=80'
+
+
+# --- Custom CSS for Styling (Based on your enhanced style.css) ---
+# We use the CSS from the previous step to apply the attractive styles.
 st.markdown(
-    """
+    f"""
     <style>
     /* Global Styles */
-    .stApp {
-        background-color: #fff;
+    .stApp {{
+        background-color: #f8f8f8; /* Very light gray background for depth */
         color: #333;
-        font-family: 'Helvetica Neue', Arial, sans-serif;
-    }
+        font-family: 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+    }}
+    
+    /* HIDE the default Streamlit header/footer */
+    .stApp > header {{ display: none; }}
+    #MainMenu {{ visibility: hidden; }}
+    footer {{ visibility: hidden; }}
 
-    /* --- Header & Navigation --- */
-    .header-bar {
-        background: #004c4c; /* Dark Teal */
-        color: #ffffff;
-        padding: 15px 0;
-        border-bottom: 3px solid #ffcc00; /* Gold accent */
-        margin-bottom: 20px;
-    }
-    .header-content {
-        width: 80%;
-        margin: auto;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-    .header-content h1 {
-        font-size: 2em;
-        margin: 0;
-    }
-    .nav-links {
-        display: flex;
-        gap: 20px;
-    }
-    .nav-links a {
-        color: #ffffff;
-        text-decoration: none;
-        text-transform: uppercase;
-        font-size: 14px;
-        transition: color 0.3s;
-    }
-    .nav-links a:hover {
-        color: #ffcc00;
-    }
-
-    /* BOOK NOW Button */
-    .btn-book {
-        background: #ffcc00;
-        color: #004c4c !important;
-        padding: 8px 15px;
-        border-radius: 5px;
-        font-weight: bold;
-        text-decoration: none !important;
-    }
-
+    /* Streamlit Sidebar Customization */
+    .st-emotion-cache-vk3wpn {{ /* Sidebar background color */
+        background-color: #004c4c; 
+        color: white;
+    }}
+    .st-emotion-cache-vk3wpn .stRadio > label, 
+    .st-emotion-cache-vk3wpn .stMarkdown p {{
+        color: white !important;
+    }}
+    .st-emotion-cache-vk3wpn .stRadio [data-baseweb="radio"] span:last-child {{
+        color: white !important;
+    }}
+    .st-emotion-cache-vk3wpn .stRadio [data-baseweb="radio"] span:first-child {{
+        border-color: #ffcc00 !important;
+    }}
+    .st-emotion-cache-vk3wpn .stAlert {{ /* Info box in sidebar */
+        background-color: #1a6f6f !important;
+        color: white !important;
+    }}
+    
     /* --- Hero Section --- */
-    .hero-section {
-        background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://via.placeholder.com/1500x500?text=Hotel+Lobby+Image');
-        background-size: cover;
-        background-position: center;
-        height: 400px;
+    .hero-section {{
+        background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url('{HERO_IMAGE}') no-repeat center center/cover;
+        height: 70vh;
         display: flex;
         align-items: center;
         justify-content: center;
         color: #ffffff;
         text-align: center;
-        border-radius: 10px;
+        border-radius: 12px;
         margin-bottom: 40px;
-    }
-    .hero-content h2 {
-        font-size: 3em;
-        margin-bottom: 10px;
-        color: white; /* Force white text */
-    }
-    .hero-content p {
-        font-size: 1.2em;
-        color: white; /* Force white text */
-    }
-    
-    /* Primary Button */
-    .btn-primary {
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    }}
+
+    .hero-content {{
+        background: rgba(0, 0, 0, 0.6);
+        padding: 40px 60px;
+        border-radius: 12px;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+    }}
+    .hero-content h2 {{
+        font-size: 3.5em;
+        margin-bottom: 15px;
+        font-weight: 700;
+        color: white;
+    }}
+    .hero-content p {{
+        font-size: 1.4em;
+        font-weight: 300;
+        color: white;
+    }}
+
+    /* Primary Button (Same as before) */
+    .btn-primary {{
         display: inline-block;
         background: #ffcc00;
         color: #004c4c !important;
-        padding: 12px 25px;
+        padding: 15px 30px;
         text-decoration: none;
-        border-radius: 5px;
-        margin-top: 20px;
-        font-size: 16px;
-        font-weight: bold;
-        transition: background 0.3s;
-    }
-    .btn-primary:hover {
-        background: #e6b800;
-    }
-    
-    /* --- Section Styling --- */
-    section {
-        padding: 40px 0;
-        text-align: center;
-    }
-    
-    h2 {
-        font-size: 2.5em;
-        color: #004c4c;
-        margin-bottom: 40px;
-    }
-    
-    /* --- Rooms Section --- */
-    .room-card-container {
-        display: flex;
-        justify-content: space-around;
-        gap: 20px;
-        padding: 20px;
-    }
-    .room-card {
-        background: #ffffff;
-        border: 1px solid #ddd;
-        padding: 20px;
         border-radius: 8px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        width: 30%;
-    }
-    .room-card img {
-        max-width: 100%;
-        height: auto;
-        border-radius: 4px;
-        margin-bottom: 15px;
-    }
+        margin-top: 25px;
+        font-size: 18px;
+        font-weight: bold;
+        transition: background 0.3s, box-shadow 0.3s;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    }}
+    .btn-primary:hover {{
+        background: #e6b800;
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+    }}
+    
+    /* Section Headers */
+    h2 {{
+        font-size: 3em;
+        color: #004c4c;
+        margin-bottom: 50px;
+        font-weight: 600;
+        text-align: center;
+    }}
+    
+    /* Room Card Styling */
+    .room-card {{
+        background: #ffffff;
+        border-radius: 10px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        overflow: hidden;
+        transition: transform 0.3s, box-shadow 0.3s;
+        height: 100%; /* Important for column alignment */
+        margin-bottom: 20px;
+    }}
+    .room-card:hover {{
+        transform: translateY(-8px);
+        box-shadow: 0 12px 25px rgba(0, 0, 0, 0.25);
+    }}
+    .room-card h3 {{
+        padding: 0 20px;
+        font-size: 1.5em;
+        color: #004c4c;
+    }}
+    .room-card p {{
+        padding: 0 20px 20px 20px;
+    }}
 
     /* --- Amenities Section --- */
-    .amenities-list {
+    .amenities-list {{
+        list-style: none;
         display: flex;
         justify-content: center;
         flex-wrap: wrap;
-        padding: 20px;
-    }
-    .amenities-list li {
-        list-style: none;
+        padding-top: 20px;
+    }}
+    .amenities-list li {{
         background: #ffffff;
         color: #004c4c;
-        padding: 15px 25px;
-        margin: 10px;
-        border-radius: 50px;
-        font-weight: bold;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
-    }
-    .icon {
-        margin-right: 8px;
+        padding: 18px 30px; 
+        margin: 12px;
+        border-radius: 30px;
+        font-weight: 600;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        transition: background 0.3s;
+    }}
+    .amenities-list li:hover {{
+        background: #ffcc00;
+        color: #333;
+    }}
+    .icon {{
+        margin-right: 10px;
         color: #ffcc00;
-        font-size: 1.2em;
-    }
-
-    /* --- Contact & Footer --- */
-    .section-contact p {
-        font-size: 1.1em;
-        margin-bottom: 10px;
-    }
-    .footer-bar {
-        background: #333;
-        color: #ffffff;
+        font-size: 1.4em;
+        line-height: 1;
+    }}
+    
+    /* --- Footer --- */
+    .custom-footer {{
+        background: #1c1c1c; 
+        color: #ccc;
         padding: 20px 0;
         text-align: center;
+        width: 100%;
         margin-top: 40px;
-    }
+    }}
 
     </style>
     """,
     unsafe_allow_html=True
 )
 
-# --- Page Content ---
 
-# Header (Replicated with Markdown for HTML Structure)
-st.markdown(
-    f"""
-    <div class="header-bar">
-        <div class="header-content">
-            <h1>The Grandview Hotel</h1>
-            <div class="nav-links">
-                <a href="#home">Home</a>
-                <a href="#rooms">Rooms & Suites</a>
-                <a href="#amenities">Amenities</a>
-                <a href="#contact">Contact</a>
-                <a href="#" class="btn-book">BOOK NOW</a>
-            </div>
-        </div>
-    </div>
-    """,
-    unsafe_allow_html=True
+# --- 1. Functional Navigation (Streamlit Sidebar) ---
+st.sidebar.title("The Grandview Hotel 🏨")
+st.sidebar.markdown("---") 
+
+page = st.sidebar.radio(
+    "Explore our hotel:",
+    ["Home", "Rooms & Suites", "Book a Room", "Amenities", "Contact Us"]
 )
 
-# Hero Section
-st.markdown('<div class="hero-section">', unsafe_allow_html=True)
-st.markdown(
-    """
-    <div class="hero-content">
-        <h2>Your Luxurious Escape Awaits</h2>
-        <p>Experience world-class hospitality in the heart of the city.</p>
-        <a href="#rooms" class="btn-primary">Explore Rooms</a>
-    </div>
-    """,
-    unsafe_allow_html=True
-)
-st.markdown('</div>', unsafe_allow_html=True)
+st.sidebar.markdown("---")
+st.sidebar.info("Experience luxury with seamless web deployment!")
 
+# --- 2. Page Rendering Logic ---
 
-# --- Rooms Section ---
-st.markdown('<a id="rooms"></a>', unsafe_allow_html=True)
-st.header("Our Accommodations")
-
-col1, col2, col3 = st.columns(3)
-
-with col1:
+if page == "Home":
+    # Hero Section with embedded image URL from CSS
+    st.markdown('<div class="hero-section">', unsafe_allow_html=True)
     st.markdown(
         """
-        <div class="room-card">
-            <img src="https://via.placeholder.com/300x200?text=Standard+Room" alt="Standard Room">
-            <h3>Standard Double</h3>
-            <p>Comfortable and elegantly designed for a restful stay.</p>
+        <div class="hero-content">
+            <h2>Your Luxurious Escape Awaits</h2>
+            <p>Experience world-class hospitality in the heart of the city.</p>
+            <a href="#rooms" class="btn-primary">Explore Rooms</a>
         </div>
         """,
         unsafe_allow_html=True
     )
+    st.markdown('</div>', unsafe_allow_html=True)
+    
+    # Text content for Home
+    st.markdown("<h2>Why Choose The Grandview?</h2>", unsafe_allow_html=True)
+    st.write("With unparalleled service, breathtaking views, and modern amenities, your stay with us will be an unforgettable experience. We pride ourselves on exceptional hospitality and a tranquil environment.")
 
-with col2:
+# --- Rooms Section with st.image() ---
+elif page == "Rooms & Suites":
+    st.markdown("<h2>Our Luxurious Accommodations</h2>", unsafe_allow_html=True)
+    st.write("Each room and suite is designed with your comfort in mind, blending elegant decor with modern conveniences.")
+
+    col1, col2, col3 = st.columns(3) # Create three columns
+
+    # Room Card 1: Standard Double
+    with col1:
+        st.markdown('<div class="room-card">', unsafe_allow_html=True)
+        # Using st.image() for easy image loading
+        st.image(STANDARD_ROOM_IMG, caption="A cozy retreat for two.", use_column_width="always")
+        st.markdown("<h3>Standard Double</h3>", unsafe_allow_html=True)
+        st.markdown("<p>Comfortable and elegantly designed for a restful stay, featuring a plush queen-sized bed and city views.</p>", unsafe_allow_html=True)
+        st.markdown("</div>", unsafe_allow_html=True)
+
+    # Room Card 2: Deluxe Suite
+    with col2:
+        st.markdown('<div class="room-card">', unsafe_allow_html=True)
+        st.image(DELUXE_SUITE_IMG, caption="Indulge in extra space and luxury.", use_column_width="always")
+        st.markdown("<h3>Deluxe Suite</h3>", unsafe_allow_html=True)
+        st.markdown("<p>Spacious living area, premium views, and exclusive services for an elevated experience. Perfect for extended stays.</p>", unsafe_allow_html=True)
+        st.markdown("</div>", unsafe_allow_html=True)
+    
+    # Room Card 3: Family Room
+    with col3:
+        st.markdown('<div class="room-card">', unsafe_allow_html=True)
+        st.image(FAMILY_ROOM_IMG, caption="Comfort for the whole family.", use_column_width="always")
+        st.markdown("<h3>Family Room</h3>", unsafe_allow_html=True)
+        st.markdown("<p>Ideal for families, offering extra space, multiple beds, and amenities tailored for a comfortable group stay.</p>", unsafe_allow_html=True)
+        st.markdown("</div>", unsafe_allow_html=True)
+    
+    st.markdown("<br>", unsafe_allow_html=True)
+    st.button("Ready to Book Your Stay?") # Placeholder button
+
+# --- Placeholder Pages for the rest of the navigation ---
+elif page == "Book a Room":
+    st.markdown("<h2>Secure Your Reservation 📝</h2>", unsafe_allow_html=True)
+    st.info("Here you will place your interactive booking form using `st.form()` and widgets.")
+    # Add your booking form logic here if needed
+
+elif page == "Amenities":
+    st.markdown("<h2>Luxury Amenities ✨</h2>", unsafe_allow_html=True)
+    st.write("We offer a range of premium amenities to ensure your stay is comfortable.")
     st.markdown(
         """
-        <div class="room-card">
-            <img src="https://via.placeholder.com/300x200?text=Deluxe+Suite" alt="Deluxe Suite">
-            <h3>Deluxe Suite</h3>
-            <p>Spacious living area, premium views, and exclusive services.</p>
+        <div class="amenities-list">
+            <li><i class="icon">★</i> Complimentary High-Speed Wi-Fi</li>
+            <li><i class="icon">★</i> Rooftop Pool & Lounge</li>
+            <li><i class="icon">★</i> Fine Dining Restaurant</li>
         </div>
         """,
         unsafe_allow_html=True
     )
+    
+elif page == "Contact Us":
+    st.markdown("<h2>Contact The Grandview Hotel 📞</h2>", unsafe_allow_html=True)
+    st.info("Here you will place your contact information and contact form.")
 
-with col3:
-    st.markdown(
-        """
-        <div class="room-card">
-            <img src="https://via.placeholder.com/300x200?text=Family+Room" alt="Family Room">
-            <h3>Family Room</h3>
-            <p>Perfect for families, offering extra space and amenities.</p>
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
-
-# --- Amenities Section ---
-st.markdown('<a id="amenities"></a>', unsafe_allow_html=True)
-st.header("Luxury Amenities")
-
-# Note: We use the UTF-8 character '★' here, which is now safe because of line 2.
-st.markdown(
-    """
-    <div class="amenities-list">
-        <li><i class="icon">★</i> Free Wi-Fi</li>
-        <li><i class="icon">★</i> Rooftop Pool</li>
-        <li><i class="icon">★</i> Fine Dining Restaurant</li>
-        <li><i class="icon">★</i> 24/7 Concierge</li>
-        <li><i class="icon">★</i> Fitness Center</li>
-    </div>
-    """,
-    unsafe_allow_html=True
-)
-
-
-# --- Contact Section ---
-st.markdown('<a id="contact"></a>', unsafe_allow_html=True)
-st.header("Contact Us")
-
-st.markdown(
-    """
-    <div class="section-contact">
-        <p>Ready to book? Have questions? Reach out to us!</p>
-        <p>Email: <a href="mailto:info@grandview.com">info@grandview.com</a></p>
-        <p>Phone: (555) 123-4567</p>
-    </div>
-    """,
-    unsafe_allow_html=True
-)
 
 # --- Footer ---
 st.markdown(
     """
-    <div class="footer-bar">
+    <div class="custom-footer">
         <p>&copy; 2025 The Grandview Hotel. All rights reserved.</p>
     </div>
     """,
